@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar - Cek Kesehatan Smanda</title>
+</head>
+<body>
+  <h2>Form Pendaftaran</h2>
+
+  <form id="form-daftar">
+    <label>NIK:</label><br>
+    <input type="text" name="nik" required><br>
+
+    <label>Nama:</label><br>
+    <input type="text" name="nama" required><br>
+
+    <label>Tanggal Lahir:</label><br>
+    <input type="date" name="tanggal_lahir" required><br>
+
+    <label>Jenis Kelamin:</label><br>
+    <select name="jenis_kelamin" required>
+      <option value="Laki-laki">Laki-laki</option>
+      <option value="Perempuan">Perempuan</option>
+    </select><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <button type="submit">Daftar</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById('form-daftar');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = {
+        nik: form.nik.value,
+        nama: form.nama.value,
+        tanggal_lahir: form.tanggal_lahir.value,
+        jenis_kelamin: form.jenis_kelamin.value,
+        email: form.email.value
+      };
+
+      fetch('https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxLiAR-4EWG5o8B3yqOMs_sDpKJbJMWEDbNDOZ4DHoo8s82Gvpwm65QpDgS4a6M-CBp/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.status === "sukses") {
+          document.getElementById('status').innerText = "Kode dikirim ke email. Silakan cek dan verifikasi.";
+          // Redirect ke halaman verifikasi
+          setTimeout(() => {
+            window.location.href = "verify.html?nik=" + data.nik;
+          }, 2000);
+        } else {
+          document.getElementById('status').innerText = "Terjadi kesalahan, coba lagi.";
+        }
+      })
+      .catch(err => {
+        document.getElementById('status').innerText = "Gagal terhubung ke server.";
+      });
+    });
+  </script>
+</body>
+</html>
