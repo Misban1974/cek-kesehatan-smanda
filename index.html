@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek Kesehatan Smanda Bangko - Login</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="login-form">
+    <input type="text" id="nik" placeholder="Masukkan NIK" required><br><br>
+    <input type="password" id="password" placeholder="Password" required><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="login-status"></p>
+
+  <p>Belum terdaftar? <a href="register.html">Daftar Sekarang</a></p>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nik = document.getElementById('nik').value;
+      const password = document.getElementById('password').value;
+
+      fetch("https://script.google.com/macros/s/PASTE_URL_WEBAPP_KAMU/exec", {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'verifikasi',
+          nik: nik,
+          password: password
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json()).then(response => {
+        if (response.status === 'sukses') {
+          window.location.href = "dashboard.html?nik=" + nik;
+        } else {
+          document.getElementById('login-status').innerText = "Login gagal. Cek kembali NIK dan Password.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

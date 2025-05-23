@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Cek Kesehatan Smanda</title>
+</head>
+<body>
+  <h2>Form Data Kesehatan</h2>
+  
+  <form id="form-kesehatan">
+    <input type="text" id="nik" placeholder="NIK" readonly><br><br>
+    <input type="text" id="nama" placeholder="Nama" readonly><br><br>
+    <input type="text" id="jenis_kelamin" placeholder="Jenis Kelamin" readonly><br><br>
+    <input type="text" id="tgl_lahir" placeholder="Tanggal Lahir" readonly><br><br>
+
+    <input type="number" id="berat" placeholder="Berat Badan (kg)" required><br><br>
+    <input type="number" id="tinggi" placeholder="Tinggi Badan (cm)" required><br><br>
+    <input type="text" id="tekanan" placeholder="Tekanan Darah (misal: 120/80)" required><br><br>
+    <input type="text" id="lainnya" placeholder="Informasi Tambahan (opsional)"><br><br>
+
+    <button type="submit">Perbarui Data</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const nik = urlParams.get('nik');
+    document.getElementById('nik').value = nik;
+
+    fetch('https://script.google.com/macros/s/PASTE_URL_WEBAPP_KAMU/exec?nik=' + nik)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('nama').value = data.nama;
+        document.getElementById('jenis_kelamin').value = data.jk;
+        document.getElementById('tgl_lahir').value = data.tgl;
+      });
+
+    document.getElementById('form-kesehatan').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = {
+        action: 'update_kesehatan',
+        nik: nik,
+        berat: document.getElementById('berat').value,
+        tinggi: document.getElementById('tinggi').value,
+        tekanan: document.getElementById('tekanan').value,
+        lainnya: document.getElementById('lainnya').value
+      };
+
+      fetch('https://script.google.com/macros/s/PASTE_URL_WEBAPP_KAMU/exec', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json()).then(response => {
+        if (response.status === 'sukses') {
+          document.getElementById('status').innerText = "Data berhasil diperbarui.";
+        } else {
+          document.getElementById('status').innerText = "Gagal memperbarui data.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
